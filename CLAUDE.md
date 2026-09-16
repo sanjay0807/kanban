@@ -85,9 +85,24 @@ drive the selects, the chips, the rail and the board. Adding a status also needs
 custom property, a `.card[data-priority]` rule and a `.pill-priority` rule. Priority is never signalled by
 colour alone — the pill always carries its text label.
 
-**CSS specificity.** `input[type="text"]` is more specific than a bare class, so any class that restyles a
-text input must be scoped through an ancestor (`.search-wrap .search-input`) or the generic rule silently
-wins. This has already caused one visible bug; check it when adding styled inputs.
+**Two views, one state.** `state.view` is `"board"` or `"dashboard"`, mirrored into the URL hash so the
+dashboard is linkable. `renderApp()` is the single entry point: it picks the view, then always refreshes
+the rail, chips and drawer. Filters and search apply to both views — the dashboard reads the same
+`applyFilters()` result the board does.
+
+**RAG is derived, never stored.** `ragStatus()` computes Red/Amber/Green from status, due date and
+priority on every render, so it cannot drift from the task. Red is late or blocked, Amber is due within
+seven days or critical, Green is on track or done. Change the thresholds there and the KPIs, health bars
+and register all follow.
+
+**CSS traps that have already bitten.** Two rules to check when adding UI:
+- `input[type="text"]` is more specific than a bare class, so a class restyling a text input must be
+  scoped through an ancestor (`.search-wrap .search-input`) or the generic rule silently wins.
+- A component that sets `display` (`.field`, `.drawer`) beats the UA rule for `[hidden]`, so `el.hidden`
+  stops working. A `[hidden] { display: none; }` rule at the very end of the stylesheet restores it —
+  keep it last.
+- Grid items default to `min-width: auto`, so a wide child (the register table) stretches the whole page.
+  Grid containers holding wide content use `minmax(0, 1fr)` and the items carry `min-width: 0`.
 
 ## FormSubmit
 

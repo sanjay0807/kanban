@@ -1174,10 +1174,11 @@ kbd {
 /* ============================================================
    10. TOASTS
    ============================================================ */
+/* Sits above the WhatsApp launcher rather than under it */
 .toast-region {
   position: fixed;
   right: var(--s4);
-  bottom: var(--s4);
+  bottom: 80px;
   z-index: 80;
   display: flex;
   flex-direction: column;
@@ -1231,6 +1232,326 @@ kbd {
 .toast-undo:hover { border-color: var(--accent-line); background: var(--accent-bg); }
 
 /* ============================================================
+   10b. VIEW SWITCHER
+   ============================================================ */
+.view-switch {
+  display: inline-flex;
+  background: var(--bar-2);
+  border: 1px solid var(--bar-line);
+  border-radius: var(--r-md);
+  padding: 2px;
+  gap: 2px;
+}
+
+.view-switch button {
+  background: transparent;
+  border: 0;
+  color: var(--bar-ink-2);
+  padding: 4px var(--s3);
+  border-radius: 5px;
+  font-size: 12.5px;
+  font-weight: 500;
+  transition: background 120ms ease, color 120ms ease;
+}
+.view-switch button:hover { color: var(--bar-ink); }
+.view-switch button[aria-pressed="true"] { background: var(--navy-500); color: #fff; }
+
+/* ============================================================
+   10c. MANAGEMENT DASHBOARD
+   ============================================================ */
+/* minmax(0, 1fr) rather than the default 1fr: a grid item's automatic
+   minimum is its min-content width, so the wide register table would
+   otherwise stretch the whole page past the viewport. */
+.dashboard {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s4);
+}
+
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
+  gap: var(--s3);
+}
+
+.kpi {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: var(--s4);
+}
+
+.kpi-value {
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.kpi-label { font-size: 12.5px; font-weight: 500; margin-top: 3px; }
+.kpi-foot  { font-size: 11.5px; color: var(--ink-3); margin-top: 5px; }
+
+.kpi[data-tone="red"]   .kpi-value { color: var(--red-600); }
+.kpi[data-tone="amber"] .kpi-value { color: var(--amber-600); }
+.kpi[data-tone="green"] .kpi-value { color: var(--green-600); }
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  min-width: 0;
+}
+
+.panel-head {
+  padding: var(--s3) var(--s5);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: baseline;
+  gap: var(--s2);
+}
+
+.panel-head h2 { font-size: 14px; }
+.panel-head .panel-sub { font-size: 12px; color: var(--ink-3); margin-left: auto; }
+
+.panel-body { padding: var(--s5); }
+
+.dash-cols {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--s5);
+}
+
+.dash-cols > * { min-width: 0; }
+
+.sub-head {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-2);
+  margin-bottom: var(--s3);
+}
+
+/* RAG indicator — the dot is reinforcement, the word carries meaning */
+.rag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.rag::before {
+  content: "";
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--rag-hue);
+  flex: none;
+}
+
+.rag[data-rag="Red"]   { --rag-hue: var(--red-600);   color: var(--red-700); }
+.rag[data-rag="Amber"] { --rag-hue: var(--amber-600); color: var(--amber-700); }
+.rag[data-rag="Green"] { --rag-hue: var(--green-600); color: var(--green-700); }
+
+.rag-key {
+  list-style: none;
+  margin: var(--s5) 0 0;
+  padding: var(--s3) 0 0;
+  border-top: 1px solid var(--line-soft);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2) var(--s5);
+}
+
+.rag-key li { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--ink-3); }
+
+.dist { display: grid; gap: 9px; }
+
+.dist-row {
+  display: grid;
+  grid-template-columns: minmax(0, 132px) 1fr 32px;
+  align-items: center;
+  gap: var(--s3);
+  font-size: 12.5px;
+}
+
+.dist-name {
+  color: var(--ink-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dist-track {
+  height: 8px;
+  background: var(--sunken);
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+}
+
+.dist-track span { height: 100%; }
+
+.dist-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* ============================================================
+   10d. TASK REGISTER TABLE
+   ============================================================ */
+.table-wrap { overflow-x: auto; }
+
+table.grid {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+
+table.grid th,
+table.grid td {
+  padding: 10px var(--s3);
+  text-align: left;
+  border-bottom: 1px solid var(--line-soft);
+  vertical-align: middle;
+}
+
+table.grid thead th {
+  background: var(--surface-2);
+  color: var(--ink-2);
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--line);
+}
+
+table.grid thead th button {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+table.grid thead th button:hover { color: var(--accent-ink); }
+
+.sort-arrow { font-size: 8px; color: var(--accent); }
+
+table.grid tbody tr { cursor: pointer; transition: background 100ms ease; }
+table.grid tbody tr:hover { background: var(--surface-2); }
+table.grid tbody tr:last-child td { border-bottom: 0; }
+
+/* A severity stripe on the row itself, so red items read while scanning */
+table.grid tbody td:first-child { border-left: 3px solid transparent; }
+table.grid tbody tr[data-rag="Red"]   td:first-child { border-left-color: var(--red-600); }
+table.grid tbody tr[data-rag="Amber"] td:first-child { border-left-color: var(--amber-600); }
+table.grid tbody tr[data-rag="Green"] td:first-child { border-left-color: var(--green-600); }
+
+table.grid td.col-task { font-weight: 500; color: var(--ink); min-width: 220px; }
+table.grid td.col-id { color: var(--ink-3); white-space: nowrap; }
+table.grid td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+table.grid td.is-late { color: var(--red-600); font-weight: 500; }
+
+.due-rel { display: block; font-size: 11px; color: var(--ink-3); font-weight: 400; }
+table.grid td.is-late .due-rel { color: var(--red-600); }
+
+/* ============================================================
+   10e. WHATSAPP LAUNCHER
+   ============================================================ */
+.wa {
+  position: fixed;
+  right: var(--s4);
+  bottom: var(--s4);
+  z-index: 70;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--s2);
+}
+
+.wa-fab {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: #1faa54;
+  color: #fff;
+  border: 0;
+  box-shadow: var(--shadow-2);
+  display: grid;
+  place-items: center;
+  transition: background 120ms ease, transform 120ms ease;
+}
+.wa-fab:hover { background: #17903f; transform: translateY(-1px); }
+
+.wa-panel {
+  width: min(288px, calc(100vw - 32px));
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-3);
+  overflow: hidden;
+}
+
+.wa-head {
+  background: #0d5c3c;
+  color: #fff;
+  padding: var(--s3) var(--s4);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s2);
+}
+
+.wa-title { font-size: 13.5px; font-weight: 600; }
+.wa-sub { font-size: 11.5px; color: rgba(255, 255, 255, 0.76); margin-top: 1px; }
+
+.wa-close {
+  margin-left: auto;
+  background: transparent;
+  border: 0;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 18px;
+  line-height: 1;
+  padding: 0 2px;
+}
+.wa-close:hover { color: #fff; }
+
+.wa-body { padding: var(--s3) var(--s4) var(--s4); }
+
+.wa-hint { font-size: 11.5px; color: var(--ink-3); margin-bottom: var(--s2); }
+
+.wa-starters { display: grid; gap: 6px; }
+
+.wa-starter {
+  text-align: left;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 7px var(--s3);
+  font-size: 12.5px;
+  color: var(--ink);
+  transition: border-color 120ms ease, background 120ms ease;
+}
+.wa-starter:hover { border-color: #1faa54; background: var(--surface); }
+
+.wa-form { display: flex; gap: 6px; margin-top: var(--s3); }
+.wa-form input { flex: 1; min-width: 0; font-size: 12.5px; }
+
+.wa-send {
+  background: #1faa54;
+  color: #fff;
+  border: 1px solid transparent;
+  border-radius: var(--r-md);
+  padding: 0 var(--s3);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.wa-send:hover { background: #17903f; }
+
+/* ============================================================
    11. FOOTER
    ============================================================ */
 .app-footer {
@@ -1260,9 +1581,23 @@ kbd {
   .toolbar .field { width: 100%; }
   .toolbar-end { margin-left: 0; width: 100%; }
   .search-wrap { max-width: none; order: 3; flex-basis: 100%; }
-  .bar-actions { margin-left: auto; }
+  .bar-actions { margin-left: auto; flex-wrap: wrap; }
   .column-header { position: static; }
+  .panel-body { padding: var(--s4); }
+  .dist-row { grid-template-columns: minmax(0, 96px) 1fr 28px; }
+  .kpi-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .kpi { padding: var(--s3); }
+  .kpi-value { font-size: 22px; }
 }
+
+/* ============================================================
+   13. LAST WORD
+   The UA rule for [hidden] is display:none at the same specificity
+   as a class, so any component that sets display (.field, .drawer)
+   would otherwise stay visible when hidden. Restating it last keeps
+   el.hidden working everywhere.
+   ============================================================ */
+[hidden] { display: none; }
 </style>
 </head>
 
@@ -1288,6 +1623,10 @@ kbd {
   </div>
 
   <div class="bar-actions">
+    <div class="view-switch" id="viewSwitch" role="group" aria-label="Choose a view">
+      <button type="button" data-view="board" aria-pressed="true">Board</button>
+      <button type="button" data-view="dashboard" aria-pressed="false">Dashboard</button>
+    </div>
     <span class="demo-flag">Internal demo</span>
     <button type="button" class="bar-btn" id="themeBtn" aria-label="Change colour theme">
       <span id="themeLabel">System</span>
@@ -1336,7 +1675,7 @@ kbd {
     <select id="filterPriority"><option value="">All priorities</option></select>
   </div>
 
-  <div class="field">
+  <div class="field" id="sortField">
     <label for="sortSelect">Sort cards by</label>
     <select id="sortSelect">
       <option value="priority">Priority</option>
@@ -1362,7 +1701,12 @@ kbd {
      ============================================================ -->
 <main class="board-wrap">
   <h1 class="visually-hidden">IT project delivery board</h1>
-  <div class="board" id="board"></div>
+
+  <section id="boardView" aria-label="Kanban board">
+    <div class="board" id="board"></div>
+  </section>
+
+  <section id="dashboardView" class="dashboard" aria-label="Management dashboard" hidden></section>
 </main>
 
 <footer class="app-footer">
@@ -1497,6 +1841,41 @@ kbd {
   </div>
 </div>
 
+<!-- ============================================================
+     WHATSAPP LAUNCHER — outbound click-to-chat, no third-party script
+     ============================================================ -->
+<div class="wa">
+  <div class="wa-panel" id="waPanel" role="dialog" aria-labelledby="waHeading" hidden>
+    <div class="wa-head">
+      <div>
+        <p id="waHeading" class="wa-title">Message the PMO</p>
+        <p class="wa-sub">Opens WhatsApp in a new tab</p>
+      </div>
+      <button type="button" class="wa-close" id="waClose" aria-label="Close WhatsApp panel">&times;</button>
+    </div>
+
+    <div class="wa-body">
+      <p class="wa-hint">Start with one of these:</p>
+      <div class="wa-starters" id="waStarters"></div>
+
+      <form id="waForm" class="wa-form">
+        <label class="visually-hidden" for="waMessage">Your message</label>
+        <input type="text" id="waMessage" maxlength="300" autocomplete="off"
+               placeholder="Or type your own message" />
+        <button type="submit" class="wa-send">Send</button>
+      </form>
+    </div>
+  </div>
+
+  <button type="button" class="wa-fab" id="waFab" aria-expanded="false"
+          aria-controls="waPanel" aria-label="Message the PMO on WhatsApp">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2zm0 2a8 8 0 1 1-4.2 14.8l-.3-.2-2.6.7.7-2.5-.2-.3A8 8 0 0 1 12 4z"/>
+      <path d="M9.2 7.4c-.2-.5-.4-.5-.6-.5h-.5c-.2 0-.5.1-.7.4-.3.3-.9.9-.9 2.1s.9 2.4 1 2.6c.1.2 1.7 2.8 4.3 3.8 2.1.8 2.5.7 3 .6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.5-.3l-1.7-.8c-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1-.3-.1-1.2-.4-2.2-1.4-.8-.7-1.3-1.6-1.5-1.9-.1-.2 0-.4.1-.5l.4-.5c.1-.2.2-.3.3-.5 0-.2 0-.3-.1-.5l-.7-1.7z"/>
+    </svg>
+  </button>
+</div>
+
 <div class="toast-region" id="toastRegion" role="status" aria-live="polite"></div>
 
 <script>
@@ -1570,6 +1949,8 @@ const ID_PREFIX = "UOB-ITPM-";
    ============================================================ */
 const state = {
   tasks: [],
+  view: "board",
+  tableSort: { key: "rag", dir: "asc" },
   filters: { project: "", assignee: "", priority: "", search: "", quick: "" },
   sort: "priority",
   theme: "system",
@@ -1872,12 +2253,31 @@ function renderColumn(status, tasks, visibleTotal) {
          "</section>";
 }
 
-function renderBoard() {
-  const visible = applyFilters();
-
+function renderBoardView(visible) {
   document.getElementById("board").innerHTML = STATUSES.map(function (status) {
     return renderColumn(status, visible.filter(function (t) { return t.status === status; }), visible.length);
   }).join("");
+}
+
+/* The one place the whole UI is redrawn from state. Both views read
+   the same filtered set, so filters and search apply to either. */
+function renderApp() {
+  const visible = applyFilters();
+  const board = document.getElementById("boardView");
+  const dash = document.getElementById("dashboardView");
+
+  board.hidden = state.view !== "board";
+  dash.hidden = state.view !== "dashboard";
+
+  /* Card sorting is board-only; the register has its own column sort */
+  document.getElementById("sortField").hidden = state.view !== "board";
+
+  if (state.view === "board") renderBoardView(visible);
+  else renderDashboard(visible);
+
+  document.querySelectorAll("[data-view]").forEach(function (btn) {
+    btn.setAttribute("aria-pressed", String(btn.dataset.view === state.view));
+  });
 
   const hidden = state.tasks.length - visible.length;
   document.getElementById("resultCount").textContent = hidden > 0
@@ -1887,6 +2287,213 @@ function renderBoard() {
   renderRail();
   renderQuickFilters();
   renderDrawer();
+}
+
+/* ============================================================
+   RAG — delivery health for one task
+   Red    escalate now: already late, or stuck on a dependency
+   Amber  watch: lands within the week, or carries critical risk
+   Green  on track, or finished
+   ============================================================ */
+function ragStatus(task) {
+  if (task.status === "Done") return "Green";
+  if (isOverdue(task) || task.status === "Blocked") return "Red";
+  const days = daysUntil(task.dueDate);
+  if (task.priority === "Critical" || (days >= 0 && days <= 7)) return "Amber";
+  return "Green";
+}
+
+const RAG_ORDER = { Red: 0, Amber: 1, Green: 2 };
+
+const RAG_REASON = {
+  Red: "Late or blocked",
+  Amber: "Due soon or critical",
+  Green: "On track"
+};
+
+const RAG_HUE = { Red: "#c8102e", Amber: "#b45309", Green: "#0f7057" };
+
+function ragCounts(tasks) {
+  return {
+    Red: tasks.filter(function (t) { return ragStatus(t) === "Red"; }).length,
+    Amber: tasks.filter(function (t) { return ragStatus(t) === "Amber"; }).length,
+    Green: tasks.filter(function (t) { return ragStatus(t) === "Green"; }).length
+  };
+}
+
+function ragPill(rag) {
+  return '<span class="rag" data-rag="' + rag + '">' + rag + "</span>";
+}
+
+/* ============================================================
+   RENDER — management dashboard
+   ============================================================ */
+function kpiTile(value, label, foot, tone) {
+  return '<div class="kpi"' + (tone ? ' data-tone="' + tone + '"' : "") + ">" +
+           '<div class="kpi-value">' + escapeHtml(String(value)) + "</div>" +
+           '<div class="kpi-label">' + escapeHtml(label) + "</div>" +
+           (foot ? '<div class="kpi-foot">' + escapeHtml(foot) + "</div>" : "") +
+         "</div>";
+}
+
+function ragBar(counts, total) {
+  if (!total) return '<div class="dist-track"></div>';
+  return '<div class="dist-track">' +
+    ["Red", "Amber", "Green"].map(function (r) {
+      const pct = (counts[r] / total) * 100;
+      return pct > 0
+        ? '<span style="width:' + pct + "%;background:" + RAG_HUE[r] + '"></span>'
+        : "";
+    }).join("") +
+  "</div>";
+}
+
+function groupRows(tasks, key, label) {
+  const names = [];
+  tasks.forEach(function (t) { if (names.indexOf(t[key]) === -1) names.push(t[key]); });
+
+  const rows = names.map(function (name) {
+    const group = tasks.filter(function (t) { return t[key] === name; });
+    return { name: name, total: group.length, counts: ragCounts(group) };
+  }).sort(function (a, b) {
+    const d = b.counts.Red - a.counts.Red;
+    return d !== 0 ? d : b.total - a.total;
+  });
+
+  if (!rows.length) {
+    return '<p class="column-empty">No tasks match the current filters.</p>';
+  }
+
+  return '<div class="dist" role="table" aria-label="' + escapeHtml(label) + '">' +
+    rows.map(function (row) {
+      return '<div class="dist-row" role="row">' +
+               '<span class="dist-name" role="cell" title="' + escapeHtml(row.name) + '">' +
+                 escapeHtml(row.name) + "</span>" +
+               '<span role="cell">' + ragBar(row.counts, row.total) + "</span>" +
+               '<span class="dist-num" role="cell">' + row.total + "</span>" +
+             "</div>";
+    }).join("") +
+  "</div>";
+}
+
+function sortForTable(tasks) {
+  const key = state.tableSort.key;
+  const dir = state.tableSort.dir === "desc" ? -1 : 1;
+
+  return tasks.slice().sort(function (a, b) {
+    let d = 0;
+    if (key === "rag") d = RAG_ORDER[ragStatus(a)] - RAG_ORDER[ragStatus(b)];
+    else if (key === "priority") d = PRIORITY_RANK[a.priority] - PRIORITY_RANK[b.priority];
+    else if (key === "dueDate") d = a.dueDate < b.dueDate ? -1 : a.dueDate > b.dueDate ? 1 : 0;
+    else d = String(a[key]).localeCompare(String(b[key]));
+    if (d === 0) d = a.id.localeCompare(b.id);
+    return d * dir;
+  });
+}
+
+const TABLE_COLS = [
+  { key: "rag",      label: "Health" },
+  { key: "id",       label: "ID" },
+  { key: "title",    label: "Task" },
+  { key: "project",  label: "Project" },
+  { key: "assignee", label: "Owner" },
+  { key: "priority", label: "Priority" },
+  { key: "dueDate",  label: "Due" },
+  { key: "status",   label: "Stage" }
+];
+
+function renderTable(tasks) {
+  if (!tasks.length) {
+    return '<p class="column-empty">No tasks match the current filters.</p>';
+  }
+
+  const head = TABLE_COLS.map(function (col) {
+    const active = state.tableSort.key === col.key;
+    const arrow = active ? (state.tableSort.dir === "asc" ? "▲" : "▼") : "";
+    return "<th scope=\"col\"" + (active ? ' aria-sort="' +
+             (state.tableSort.dir === "asc" ? "ascending" : "descending") + '"' : "") + ">" +
+             '<button type="button" data-sort="' + col.key + '">' +
+               escapeHtml(col.label) +
+               '<span class="sort-arrow" aria-hidden="true">' + arrow + "</span>" +
+             "</button>" +
+           "</th>";
+  }).join("");
+
+  const body = sortForTable(tasks).map(function (task) {
+    const rag = ragStatus(task);
+    const late = isOverdue(task);
+    const rel = relativeDue(task);
+
+    return '<tr data-rag="' + rag + '" data-id="' + escapeHtml(task.id) + '" tabindex="0">' +
+             "<td>" + ragPill(rag) + "</td>" +
+             '<td class="num col-id">' + escapeHtml(task.id) + "</td>" +
+             '<td class="col-task">' + escapeHtml(task.title) + "</td>" +
+             "<td>" + escapeHtml(task.project) + "</td>" +
+             "<td>" + escapeHtml(task.assignee) + "</td>" +
+             '<td><span class="pill pill-priority" data-priority="' + escapeHtml(task.priority) + '">' +
+               escapeHtml(task.priority) + "</span></td>" +
+             '<td class="num' + (late ? " is-late" : "") + '">' +
+               escapeHtml(formatDueDate(task.dueDate)) +
+               (rel ? '<span class="due-rel">' + escapeHtml(rel) + "</span>" : "") +
+             "</td>" +
+             "<td>" + escapeHtml(task.status) + "</td>" +
+           "</tr>";
+  }).join("");
+
+  return '<div class="table-wrap"><table class="grid">' +
+           "<thead><tr>" + head + "</tr></thead>" +
+           "<tbody>" + body + "</tbody>" +
+         "</table></div>";
+}
+
+function renderDashboard(visible) {
+  const counts = ragCounts(visible);
+  const total = visible.length;
+  const done = visible.filter(function (t) { return t.status === "Done"; }).length;
+  const overdue = visible.filter(isOverdue).length;
+  const completion = total ? Math.round((done / total) * 100) : 0;
+
+  const kpis =
+    '<div class="kpi-row">' +
+      kpiTile(total, "Tasks in view", "Across " + STATUSES.length + " stages") +
+      kpiTile(counts.Red, "Red", RAG_REASON.Red, counts.Red ? "red" : null) +
+      kpiTile(counts.Amber, "Amber", RAG_REASON.Amber, counts.Amber ? "amber" : null) +
+      kpiTile(counts.Green, "Green", RAG_REASON.Green, "green") +
+      kpiTile(overdue, "Overdue", "Past the committed date", overdue ? "red" : null) +
+      kpiTile(completion + "%", "Complete", done + " of " + total + " closed") +
+    "</div>";
+
+  const health =
+    '<section class="panel">' +
+      '<div class="panel-head"><h2>Delivery health</h2>' +
+        '<span class="panel-sub">Red first</span></div>' +
+      '<div class="panel-body">' +
+        '<div class="dash-cols">' +
+          "<div>" +
+            '<h3 class="sub-head">By project</h3>' +
+            groupRows(visible, "project", "Delivery health by project") +
+          "</div>" +
+          "<div>" +
+            '<h3 class="sub-head">By owner</h3>' +
+            groupRows(visible, "assignee", "Delivery health by owner") +
+          "</div>" +
+        "</div>" +
+        '<ul class="rag-key">' +
+          ["Red", "Amber", "Green"].map(function (r) {
+            return "<li>" + ragPill(r) + "<span>" + escapeHtml(RAG_REASON[r]) + "</span></li>";
+          }).join("") +
+        "</ul>" +
+      "</div>" +
+    "</section>";
+
+  const register =
+    '<section class="panel">' +
+      '<div class="panel-head"><h2>Task register</h2>' +
+        '<span class="panel-sub">Select a row to open the task</span></div>' +
+      renderTable(visible) +
+    "</section>";
+
+  document.getElementById("dashboardView").innerHTML = kpis + health + register;
 }
 
 /* ============================================================
@@ -2015,14 +2622,14 @@ function undoLast() {
   state.undo = null;
   state.pendingDeleteId = null;
   state.editing = false;
-  renderBoard();
+  renderApp();
   showToast("success", "Change reversed", label + " was undone.");
 }
 
 function addTask(task) {
   snapshot("Adding " + task.id);
   state.tasks.unshift(task);
-  renderBoard();
+  renderApp();
 }
 
 function moveTask(id, nextStatus, beforeId) {
@@ -2044,7 +2651,7 @@ function moveTask(id, nextStatus, beforeId) {
   }
 
   state.pendingDeleteId = null;
-  renderBoard();
+  renderApp();
 
   if (!sameColumn) {
     showToast("success", "Task moved", task.id + " moved from " + from + " to " + nextStatus + ".", "Undo");
@@ -2057,7 +2664,7 @@ function updateTask(id, values) {
   snapshot(task.id);
   Object.assign(task, values);
   state.editing = false;
-  renderBoard();
+  renderApp();
   showToast("success", "Changes saved", task.id + " was updated.", "Undo");
 }
 
@@ -2068,7 +2675,7 @@ function deleteTask(id) {
   const removed = state.tasks.splice(index, 1)[0];
   state.pendingDeleteId = null;
   if (state.openTaskId === id) { state.openTaskId = null; state.editing = false; }
-  renderBoard();
+  renderApp();
   showToast("warn", "Task deleted", removed.id + " was removed from the board.", "Undo");
 }
 
@@ -2228,7 +2835,7 @@ function closeForm() {
 function openTask(id) {
   state.openTaskId = id;
   state.editing = false;
-  renderBoard();
+  renderApp();
   const close = document.querySelector('#drawer [data-action="close-drawer"]');
   if (close) close.focus();
 }
@@ -2236,7 +2843,7 @@ function openTask(id) {
 function closeDrawer() {
   state.openTaskId = null;
   state.editing = false;
-  renderBoard();
+  renderApp();
 }
 
 function openHelp() { document.getElementById("helpBackdrop").hidden = false; }
@@ -2248,6 +2855,8 @@ function closeHelp() { document.getElementById("helpBackdrop").hidden = true; }
 function paletteCommands() {
   return [
     { label: "Log a new task", hint: "N", run: openForm },
+    { label: "Open the management dashboard", hint: "", run: function () { setView("dashboard"); } },
+    { label: "Open the Kanban board", hint: "", run: function () { setView("board"); } },
     { label: "Clear all filters", hint: "", run: clearFilters },
     { label: "Show only overdue work", hint: "", run: function () { setQuick("overdue"); } },
     { label: "Show only critical work", hint: "", run: function () { setQuick("critical"); } },
@@ -2349,13 +2958,35 @@ function runPaletteItem(index) {
    ============================================================ */
 function setQuick(id) {
   state.filters.quick = state.filters.quick === id ? "" : id;
-  renderBoard();
+  renderApp();
 }
 
 function setSort(mode) {
   state.sort = mode;
   document.getElementById("sortSelect").value = mode;
-  renderBoard();
+  renderApp();
+}
+
+/* The view is reflected in the URL hash so a manager can bookmark or
+   share the dashboard directly. replaceState keeps the back button clean,
+   and is wrapped because it throws in some file:// contexts. */
+function setView(view) {
+  if (view !== "board" && view !== "dashboard") return;
+  state.view = view;
+  try {
+    window.history.replaceState(null, "", view === "dashboard" ? "#dashboard" : "#board");
+  } catch (err) {
+    /* Not worth surfacing — the view still changes. */
+  }
+  renderApp();
+}
+
+function setTableSort(key) {
+  const current = state.tableSort;
+  state.tableSort = key === current.key
+    ? { key: key, dir: current.dir === "asc" ? "desc" : "asc" }
+    : { key: key, dir: "asc" };
+  renderApp();
 }
 
 function clearFilters() {
@@ -2364,7 +2995,7 @@ function clearFilters() {
   document.getElementById("filterPriority").value = "";
   document.getElementById("filterAssignee").value = "";
   document.getElementById("searchInput").value = "";
-  renderBoard();
+  renderApp();
 }
 
 function cycleTheme() {
@@ -2407,25 +3038,46 @@ function exportCsv() {
    ============================================================ */
 function wireToolbar() {
   document.getElementById("filterProject").addEventListener("change", function (e) {
-    state.filters.project = e.target.value; renderBoard();
+    state.filters.project = e.target.value; renderApp();
   });
   document.getElementById("filterPriority").addEventListener("change", function (e) {
-    state.filters.priority = e.target.value; renderBoard();
+    state.filters.priority = e.target.value; renderApp();
   });
   document.getElementById("filterAssignee").addEventListener("input", function (e) {
-    state.filters.assignee = e.target.value; renderBoard();
+    state.filters.assignee = e.target.value; renderApp();
   });
   document.getElementById("searchInput").addEventListener("input", function (e) {
-    state.filters.search = e.target.value; renderBoard();
+    state.filters.search = e.target.value; renderApp();
   });
   document.getElementById("sortSelect").addEventListener("change", function (e) {
-    state.sort = e.target.value; renderBoard();
+    state.sort = e.target.value; renderApp();
   });
   document.getElementById("clearFiltersBtn").addEventListener("click", clearFilters);
 
   document.getElementById("quickFilters").addEventListener("click", function (e) {
     const chip = e.target.closest("[data-quick]");
     if (chip) setQuick(chip.dataset.quick);
+  });
+
+  document.getElementById("viewSwitch").addEventListener("click", function (e) {
+    const btn = e.target.closest("[data-view]");
+    if (btn) setView(btn.dataset.view);
+  });
+
+  /* Dashboard: sort on a header, open a task from a row */
+  const dash = document.getElementById("dashboardView");
+
+  dash.addEventListener("click", function (e) {
+    const sortBtn = e.target.closest("[data-sort]");
+    if (sortBtn) { setTableSort(sortBtn.dataset.sort); return; }
+    const row = e.target.closest("tr[data-id]");
+    if (row) openTask(row.dataset.id);
+  });
+
+  dash.addEventListener("keydown", function (e) {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    const row = e.target.closest("tr[data-id]");
+    if (row) { e.preventDefault(); openTask(row.dataset.id); }
   });
 
   document.getElementById("themeBtn").addEventListener("click", cycleTheme);
@@ -2447,14 +3099,14 @@ function handleAction(event) {
 
   if (action === "ask-delete") {
     state.pendingDeleteId = id;
-    renderBoard();
+    renderApp();
     const yes = document.querySelector('button[data-action="confirm-delete"][data-id="' + id + '"]');
     if (yes) yes.focus();
     return true;
   }
   if (action === "cancel-delete") {
     state.pendingDeleteId = null;
-    renderBoard();
+    renderApp();
     const del = document.querySelector('button[data-action="ask-delete"][data-id="' + id + '"]');
     if (del) del.focus();
     return true;
@@ -2665,6 +3317,7 @@ function wireKeyboard() {
     }
 
     if (event.key === "Escape") {
+      if (!document.getElementById("waPanel").hidden) { closeWhatsAppPanel(); return; }
       if (state.palette.open) { closePalette(); return; }
       if (!document.getElementById("helpBackdrop").hidden) { closeHelp(); return; }
       if (!document.getElementById("modalBackdrop").hidden) { closeForm(); return; }
@@ -2677,6 +3330,88 @@ function wireKeyboard() {
     if (event.key === "/") { event.preventDefault(); document.getElementById("searchInput").focus(); }
     else if (event.key.toLowerCase() === "n") { event.preventDefault(); openForm(); }
     else if (event.key === "?") { event.preventDefault(); openHelp(); }
+  });
+}
+
+/* ============================================================
+   WHATSAPP LAUNCHER
+   Opens WhatsApp's click-to-chat with a prefilled message. No
+   third-party script and no tracking — just an outbound link.
+   ============================================================ */
+const WHATSAPP_NUMBER = "6584263431";
+
+function whatsappUrl(message) {
+  return "https://wa.me/" + WHATSAPP_NUMBER +
+         (message ? "?text=" + encodeURIComponent(message) : "");
+}
+
+function openWhatsApp(message) {
+  window.open(whatsappUrl(message), "_blank", "noopener");
+  closeWhatsAppPanel();
+}
+
+function toggleWhatsAppPanel() {
+  const panel = document.getElementById("waPanel");
+  const fab = document.getElementById("waFab");
+  const open = panel.hidden;
+  panel.hidden = !open;
+  fab.setAttribute("aria-expanded", String(open));
+  if (open) document.getElementById("waMessage").focus();
+}
+
+function closeWhatsAppPanel() {
+  document.getElementById("waPanel").hidden = true;
+  document.getElementById("waFab").setAttribute("aria-expanded", "false");
+}
+
+/* Quick starters reference whatever is actually on the board, so the
+   message arrives with context rather than a bare "hello". */
+function whatsappStarters() {
+  const red = state.tasks.filter(function (t) { return ragStatus(t) === "Red"; });
+  const blocked = state.tasks.filter(function (t) { return t.status === "Blocked"; });
+
+  return [
+    {
+      label: "Escalate a red item",
+      message: red.length
+        ? "Hi, I'd like to escalate " + red[0].id + " — " + red[0].title + "."
+        : "Hi, I'd like to escalate a delivery item."
+    },
+    {
+      label: "Chase a blocker",
+      message: blocked.length
+        ? "Hi, can we get an update on the blocker for " + blocked[0].id + "?"
+        : "Hi, can we get an update on an open blocker?"
+    },
+    { label: "Request a status report", message: "Hi, could you send the latest PMO status report?" }
+  ];
+}
+
+function renderWhatsAppStarters() {
+  document.getElementById("waStarters").innerHTML = whatsappStarters().map(function (s, i) {
+    return '<button type="button" class="wa-starter" data-starter="' + i + '">' +
+             escapeHtml(s.label) +
+           "</button>";
+  }).join("");
+}
+
+function wireWhatsApp() {
+  document.getElementById("waFab").addEventListener("click", toggleWhatsAppPanel);
+  document.getElementById("waClose").addEventListener("click", function () {
+    closeWhatsAppPanel();
+    document.getElementById("waFab").focus();
+  });
+
+  document.getElementById("waStarters").addEventListener("click", function (e) {
+    const btn = e.target.closest("[data-starter]");
+    if (btn) openWhatsApp(whatsappStarters()[Number(btn.dataset.starter)].message);
+  });
+
+  document.getElementById("waForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const input = document.getElementById("waMessage");
+    openWhatsApp(input.value.trim());
+    input.value = "";
   });
 }
 
@@ -2696,13 +3431,17 @@ function init() {
   document.getElementById("fDueDate").min = todayIso();
   document.documentElement.setAttribute("data-density", state.density);
 
+  if (window.location.hash === "#dashboard") state.view = "dashboard";
+
   seedTasks();
   wireToolbar();
   wireBoard();
   wireModal();
   wirePalette();
   wireKeyboard();
-  renderBoard();
+  wireWhatsApp();
+  renderWhatsAppStarters();
+  renderApp();
 }
 
 init();
