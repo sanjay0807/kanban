@@ -41,14 +41,25 @@ python -m http.server 8731
 Delete any `.claude/launch.json` you create for that server afterwards — the deliverable is one file.
 
 Worth re-checking after any change to rendering or state: drag a card between columns (highlight appears
-and clears), the `Move ▸` select on a card, the delete Yes/No flow and where focus lands, submitting the
-form empty, submitting with a past due date, the three filters composing, and the layout at 375px.
+and clears), drag to reorder inside a column while sort is set to manual, the Move select on a card, the
+delete Yes/No flow and where focus lands, the command palette (Ctrl+K) finding both tasks and commands,
+opening a card into the drawer and saving an edit, undo after a move/edit/delete, submitting the form
+empty, submitting with a past due date, the filters and quick chips composing, and the layout at 375px.
 
 ## Architecture
 
-**Single source of truth.** `state = { tasks, filters, idCounter, pendingDeleteId, dragTaskId }`. Every
-mutation goes through `addTask()`, `moveTask()` or `deleteTask()`, and each one ends by calling
-`renderBoard()`.
+**Single source of truth.** One `state` object holds `tasks`, `filters`, `sort`, `theme`, `density`,
+`idCounter` and the transient UI flags (`pendingDeleteId`, `dragTaskId`, `openTaskId`, `editing`, `undo`,
+`palette`). Every mutation goes through `addTask()`, `moveTask()`, `updateTask()` or `deleteTask()`, and
+each one ends by calling `renderBoard()`.
+
+**Undo is snapshot-based.** Each mutator calls `snapshot()` first, which deep-copies the task array into
+`state.undo`. `undoLast()` restores it wholesale, so undo works for moves, edits, adds and deletes without
+per-operation inverse logic. Any new mutator must call `snapshot()` before it changes anything.
+
+**Reordering only applies in manual sort.** `sortTasks()` re-sorts on every render, so a dragged position
+would be immediately overridden under any other mode. The drag handler therefore only draws the insertion
+indicator and passes `beforeId` when `state.sort === "manual"`.
 
 **One-way render.** `renderBoard()` → `renderColumn()` → `renderCard()` rebuilds the board's `innerHTML`
 from `state` on every change. Nothing outside that chain may mutate card contents. Transient UI that
@@ -68,10 +79,15 @@ for this: adding a task titled `<img src=x onerror=...>` must render as literal 
 which shifts to UTC and makes due dates wrong near midnight. Overdue and past-date checks rely on
 `YYYY-MM-DD` strings comparing correctly with `<`.
 
-**Vocabularies.** `STATUSES`, `PROJECTS`, `CATEGORIES` and `PRIORITIES` drive both the form selects and the
-board. Adding a status also needs a column dot colour and a `STATUS_HINTS` entry; adding a priority also
-needs a `--pri-*` custom property, a `.card[data-priority]` left-border rule, and a `.pill-priority` rule.
-Priority is never signalled by colour alone — the pill always carries its text label.
+**Vocabularies.** `STATUSES`, `PROJECTS`, `CATEGORIES`, `PRIORITIES`, `WIP_LIMITS` and `QUICK_FILTERS`
+drive the selects, the chips, the rail and the board. Adding a status also needs `STATUS_HINTS`,
+`STATUS_HUE` and a `.column[data-status]` rule; adding a priority also needs `PRIORITY_RANK`, a `--pri-*`
+custom property, a `.card[data-priority]` rule and a `.pill-priority` rule. Priority is never signalled by
+colour alone — the pill always carries its text label.
+
+**CSS specificity.** `input[type="text"]` is more specific than a bare class, so any class that restyles a
+text input must be scoped through an ancestor (`.search-wrap .search-input`) or the generic rule silently
+wins. This has already caused one visible bug; check it when adding styled inputs.
 
 ## FormSubmit
 
