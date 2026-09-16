@@ -5,6 +5,8 @@ Single-page IT project management Kanban board for an internal "UOB IT PMO" demo
 Vanilla HTML, CSS and JavaScript in one file — no framework, no build step, no dependencies.
 Open `index.html` in a browser to run it.
 
+**Live demo:** https://sanjay0807.github.io/kanban/
+
 ## Features
 
 - Four fixed columns: Backlog, In Progress, Blocked, Done — with live count badges
